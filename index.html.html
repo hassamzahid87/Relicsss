@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RELICS — Action Figures & Antiques</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --off-black: #111111;
+    --dark: #1a1a1a;
+    --gold: #c9a84c;
+    --gold-light: #e8c97e;
+    --gold-dim: #7a6028;
+    --cream: #f5f0e8;
+    --cream-dark: #e8e0d0;
+    --red: #c0392b;
+    --white: #ffffff;
+    --gray: #888;
+    --border: rgba(201,168,76,0.25);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 99999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 99998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease-out, width 0.3s, height 0.3s;
+    opacity: 0.7;
+  }
+  body:hover .cursor { opacity: 1; }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9990;
+    opacity: 0.4;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 1000;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    transition: padding 0.3s;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--cream); font-weight: 400; font-size: 11px; display: block; letter-spacing: 0.3em; text-transform: uppercase; margin-top: -4px; }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    color: var(--cream-dark);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0; right: 100%;
+    height: 1px; background: var(--gold);
+    transition: right 0.25s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { right: 0; }
+
+  .nav-right { display: flex; align-items: center; gap: 20px; }
+  .cart-btn {
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    padding: 10px 22px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    cursor: none;
+    font-weight: 700;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s, color 0.2s;
+  }
+  .cart-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--black);
+    transform: translateX(-101%);
+    transition: transform 0.3s;
+  }
+  .cart-btn:hover::before { transform: translateX(0); }
+  .cart-btn:hover { color: var(--gold); }
+  .cart-btn span { position: relative; z-index: 1; }
+  .cart-count {
+    background: var(--red);
+    color: #fff;
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    font-size: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-left: 6px;
+    font-weight: 700;
+  }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: none; background: none; border: none; }
+  .hamburger span { width: 24px; height: 2px; background: var(--gold); display: block; transition: 0.3s; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 120px 48px 80px;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 70% 50%, rgba(201,168,76,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(192,57,43,0.06) 0%, transparent 60%),
+      linear-gradient(160deg, #0a0a0a 0%, #111111 50%, #0d0d0d 100%);
+  }
+  .hero-grid-lines {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 760px; }
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 40px; height: 1px; background: var(--gold);
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 8vw, 110px);
+    font-weight: 900;
+    line-height: 0.92;
+    color: var(--cream);
+    margin-bottom: 30px;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+    display: block;
+  }
+  .hero-desc {
+    font-size: 17px;
+    color: var(--gray);
+    line-height: 1.7;
+    max-width: 520px;
+    margin-bottom: 48px;
+    font-weight: 300;
+  }
+  .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--gold);
+    color: var(--black);
+    padding: 16px 40px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    text-transform: uppercase;
+    display: inline-block;
+    position: relative; overflow: hidden;
+    transition: color 0.3s;
+    cursor: none;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--black);
+    transform: translateY(101%);
+    transition: transform 0.35s cubic-bezier(.77,0,.175,1);
+  }
+  .btn-primary:hover { color: var(--gold); }
+  .btn-primary:hover::after { transform: translateY(0); }
+  .btn-primary span { position: relative; z-index: 1; }
+  .btn-outline {
+    border: 1px solid var(--border);
+    color: var(--cream);
+    padding: 16px 40px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    text-transform: uppercase;
+    display: inline-block;
+    transition: border-color 0.2s, color 0.2s;
+    cursor: none;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hero-stats {
+    position: absolute; right: 48px; bottom: 80px;
+    display: flex; flex-direction: column; gap: 28px;
+    text-align: right;
+  }
+  .hero-stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .hero-stat-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--gray);
+    text-transform: uppercase;
+  }
+  .hero-scroll {
+    position: absolute; bottom: 32px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gray);
+    text-transform: uppercase;
+    cursor: none;
+  }
+  .hero-scroll::after {
+    content: '';
+    width: 1px; height: 48px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollLine 1.5s ease-in-out infinite;
+  }
+  @keyframes scrollLine { 0%,100% { opacity: 1; transform: scaleY(1); } 50% { opacity: 0.3; transform: scaleY(0.6); } }
+
+  /* MARQUEE */
+  .marquee-bar {
+    background: var(--gold);
+    padding: 12px 0;
+    overflow: hidden;
+    border-top: 1px solid var(--gold-dim);
+    border-bottom: 1px solid var(--gold-dim);
+  }
+  .marquee-track {
+    display: flex;
+    animation: marquee 22s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-track span {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    color: var(--black);
+    text-transform: uppercase;
+    padding: 0 32px;
+  }
+  .marquee-dot { color: var(--black); opacity: 0.4; }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  /* SECTION COMMONS */
+  section { padding: 100px 48px; }
+  .section-header { margin-bottom: 60px; }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label::before { content: ''; width: 24px; height: 1px; background: var(--gold); }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1.05;
+  }
+  .section-title em { color: var(--gold); font-style: italic; }
+
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .filter-btn {
+    padding: 9px 22px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--gray);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: none;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--black);
+    font-weight: 700;
+  }
+
+  /* PRODUCT GRID */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2px;
+  }
+  .product-card {
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    transition: transform 0.4s cubic-bezier(.25,.8,.25,1);
+    border: 1px solid transparent;
+  }
+  .product-card:hover {
+    border-color: var(--gold);
+    z-index: 2;
+    transform: scale(1.01);
+  }
+  .product-card.featured {
+    grid-column: span 2;
+  }
+  .product-img-wrap {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    background: #181818;
+  }
+  .product-card.featured .product-img-wrap { height: 400px; }
+  .product-img-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #181818 0%, #222 100%);
+  }
+  .product-img-placeholder .icon { font-size: 52px; opacity: 0.6; }
+  .product-img-placeholder .img-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gray);
+    text-transform: uppercase;
+  }
+  .product-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.3) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.35s;
+    display: flex; flex-direction: column;
+    justify-content: flex-end; align-items: center;
+    padding: 24px;
+    gap: 10px;
+  }
+  .product-card:hover .product-overlay { opacity: 1; }
+  .overlay-btn {
+    width: 100%;
+    padding: 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: none;
+    cursor: none;
+    transition: all 0.2s;
+  }
+  .overlay-btn.primary { background: var(--gold); color: var(--black); }
+  .overlay-btn.secondary { background: transparent; color: var(--cream); border: 1px solid rgba(255,255,255,0.3); }
+  .overlay-btn:hover { filter: brightness(1.1); }
+
+  .badge {
+    position: absolute; top: 16px; left: 16px;
+    padding: 5px 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+  .badge-new { background: var(--gold); color: var(--black); }
+  .badge-rare { background: var(--red); color: #fff; }
+  .badge-sold { background: #333; color: var(--gray); }
+
+  .product-info { padding: 20px 22px 22px; }
+  .product-category {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .product-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .product-condition {
+    font-size: 12px;
+    color: var(--gray);
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+  .product-footer {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .product-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .product-price span { font-size: 14px; color: var(--gray); text-decoration: line-through; margin-left: 8px; font-family: 'DM Sans', sans-serif; font-weight: 400; }
+  .quick-add {
+    width: 38px; height: 38px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    color: var(--gold);
+    font-size: 22px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: none;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .quick-add:hover { background: var(--gold); color: var(--black); border-color: var(--gold); }
+
+  /* FEATURES STRIP */
+  .features-strip {
+    background: var(--dark);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 0;
+  }
+  .feature-item {
+    padding: 48px 36px;
+    display: flex; flex-direction: column; gap: 12px;
+    border-right: 1px solid var(--border);
+  }
+  .feature-item:last-child { border-right: none; }
+  .feature-icon { font-size: 28px; }
+  .feature-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; font-weight: 700;
+    color: var(--cream);
+  }
+  .feature-desc { font-size: 13px; color: var(--gray); line-height: 1.6; }
+
+  /* CATEGORIES */
+  .categories-section { background: var(--off-black); }
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+    margin-top: 48px;
+  }
+  .cat-card {
+    position: relative; height: 280px;
+    overflow: hidden; cursor: none;
+    background: var(--dark);
+    display: flex; align-items: flex-end;
+    padding: 28px;
+  }
+  .cat-card:first-child { grid-row: span 2; height: auto; min-height: 563px; }
+  .cat-bg {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 100px;
+    opacity: 0.12;
+    transition: transform 0.5s, opacity 0.3s;
+  }
+  .cat-card:hover .cat-bg { transform: scale(1.1); opacity: 0.2; }
+  .cat-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,10,10,0.9) 0%, transparent 60%);
+  }
+  .cat-content { position: relative; z-index: 2; }
+  .cat-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 900;
+    color: var(--cream); margin-bottom: 6px;
+  }
+  .cat-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; color: var(--gold);
+    letter-spacing: 0.2em; text-transform: uppercase;
+  }
+  .cat-arrow {
+    position: absolute; top: 24px; right: 24px;
+    width: 40px; height: 40px;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 18px;
+    opacity: 0;
+    transition: opacity 0.3s, background 0.2s;
+  }
+  .cat-card:hover .cat-arrow { opacity: 1; background: var(--gold); color: var(--black); border-color: var(--gold); }
+
+  /* TESTIMONIALS */
+  .testimonials-section { background: var(--black); }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 48px;
+  }
+  .testimonial-card {
+    background: var(--dark);
+    padding: 32px;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .testimonial-card::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    color: var(--gold);
+    opacity: 0.2;
+    position: absolute; top: 16px; right: 24px;
+    line-height: 1;
+  }
+  .stars { color: var(--gold); font-size: 14px; margin-bottom: 16px; letter-spacing: 2px; }
+  .testimonial-text { font-size: 15px; color: var(--cream-dark); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+  .testimonial-author { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 0.15em; text-transform: uppercase; }
+
+  /* PRODUCT MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 5000;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+    padding: 24px;
+  }
+  .modal-overlay.active { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    width: 100%; max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    transform: translateY(30px);
+    transition: transform 0.35s;
+  }
+  .modal-overlay.active .modal { transform: translateY(0); }
+  .modal-img {
+    background: #181818;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 80px;
+    min-height: 400px;
+  }
+  .modal-body { padding: 40px; }
+  .modal-close {
+    position: absolute; top: 24px; right: 24px;
+    width: 40px; height: 40px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: none;
+    transition: background 0.2s;
+  }
+  .modal-close:hover { background: var(--red); border-color: var(--red); }
+  .modal-category { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--gold); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 10px; }
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 900; color: var(--cream); margin-bottom: 10px; line-height: 1.1; }
+  .modal-price { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--gold); margin-bottom: 24px; }
+  .modal-desc { font-size: 14px; color: var(--gray); line-height: 1.8; margin-bottom: 24px; }
+  .condition-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid var(--border);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .qty-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .qty-label { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--gray); letter-spacing: 0.15em; text-transform: uppercase; }
+  .qty-control { display: flex; align-items: center; border: 1px solid var(--border); }
+  .qty-btn { width: 36px; height: 36px; background: none; border: none; color: var(--gold); font-size: 18px; cursor: none; transition: background 0.2s; }
+  .qty-btn:hover { background: var(--border); }
+  .qty-num { width: 44px; text-align: center; color: var(--cream); font-family: 'Space Mono', monospace; font-size: 14px; }
+  .modal-actions { display: flex; flex-direction: column; gap: 10px; }
+  .modal-add-btn {
+    padding: 15px;
+    background: var(--gold); color: var(--black);
+    border: none; font-family: 'Space Mono', monospace;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; cursor: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .modal-add-btn:hover { background: var(--gold-light); }
+  .modal-inquire-btn {
+    padding: 15px;
+    background: transparent; color: var(--cream);
+    border: 1px solid var(--border);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; cursor: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .modal-inquire-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* CART PANEL */
+  .cart-panel {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: 440px; max-width: 100vw;
+    background: var(--off-black);
+    border-left: 1px solid var(--border);
+    z-index: 4000;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(.77,0,.175,1);
+    display: flex; flex-direction: column;
+  }
+  .cart-panel.open { transform: translateX(0); }
+  .cart-header {
+    padding: 24px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .cart-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--cream); }
+  .cart-close { background: none; border: none; color: var(--gray); font-size: 24px; cursor: none; transition: color 0.2s; }
+  .cart-close:hover { color: var(--gold); }
+  .cart-items { flex: 1; overflow-y: auto; padding: 24px 28px; display: flex; flex-direction: column; gap: 16px; }
+  .cart-item {
+    display: flex; gap: 16px;
+    padding: 16px;
+    background: var(--dark);
+    border: 1px solid var(--border);
+  }
+  .cart-item-img {
+    width: 72px; height: 72px;
+    background: #222;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; flex-shrink: 0;
+  }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--cream); margin-bottom: 4px; }
+  .cart-item-price { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--gold); }
+  .cart-item-remove { background: none; border: none; color: var(--gray); cursor: none; font-size: 16px; transition: color 0.2s; align-self: flex-start; }
+  .cart-item-remove:hover { color: var(--red); }
+  .cart-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 16px; color: var(--gray); font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; }
+  .cart-empty-icon { font-size: 48px; opacity: 0.3; }
+  .cart-footer { padding: 24px 28px; border-top: 1px solid var(--border); }
+  .cart-subtotal { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .cart-subtotal-label { font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: 0.15em; color: var(--gray); text-transform: uppercase; }
+  .cart-subtotal-amount { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--gold); }
+  .checkout-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--gold); color: var(--black);
+    border: none; font-family: 'Space Mono', monospace;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; cursor: none;
+    transition: background 0.2s;
+    margin-bottom: 10px;
+  }
+  .checkout-btn:hover { background: var(--gold-light); }
+
+  /* CHECKOUT SECTION */
+  .checkout-section { background: var(--off-black); display: none; }
+  .checkout-section.active { display: block; }
+  .checkout-grid { display: grid; grid-template-columns: 1fr 400px; gap: 48px; }
+  .checkout-form { display: flex; flex-direction: column; gap: 24px; }
+  .form-section-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--cream); margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; }
+  .form-input {
+    padding: 14px 16px;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    cursor: none;
+  }
+  .form-input:focus { border-color: var(--gold); }
+  .form-input::placeholder { color: var(--gray); }
+  select.form-input { cursor: none; }
+  .order-summary { background: var(--dark); border: 1px solid var(--border); padding: 28px; height: fit-content; position: sticky; top: 100px; }
+  .order-summary-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--cream); margin-bottom: 20px; }
+  .order-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .order-item-name { font-size: 14px; color: var(--cream-dark); }
+  .order-item-price { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--gold); }
+  .order-total { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; }
+  .order-total-label { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--gray); letter-spacing: 0.15em; text-transform: uppercase; }
+  .order-total-amount { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--gold); }
+  .place-order-btn {
+    width: 100%; margin-top: 20px;
+    padding: 16px;
+    background: var(--gold); color: var(--black);
+    border: none; font-family: 'Space Mono', monospace;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; cursor: none;
+    transition: background 0.2s;
+  }
+  .place-order-btn:hover { background: var(--gold-light); }
+
+  /* CONTACT */
+  .contact-section { background: var(--black); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+  .contact-info { display: flex; flex-direction: column; gap: 32px; }
+  .contact-item { display: flex; align-items: flex-start; gap: 20px; }
+  .contact-icon { font-size: 24px; margin-top: 2px; }
+  .contact-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.25em; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
+  .contact-value { font-size: 16px; color: var(--cream); line-height: 1.5; }
+  .contact-value a { color: var(--cream); text-decoration: none; transition: color 0.2s; }
+  .contact-value a:hover { color: var(--gold); }
+  .contact-form { display: flex; flex-direction: column; gap: 16px; }
+  .form-textarea {
+    padding: 14px 16px;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    resize: vertical;
+    min-height: 130px;
+    transition: border-color 0.2s;
+    cursor: none;
+  }
+  .form-textarea:focus { border-color: var(--gold); }
+  .form-textarea::placeholder { color: var(--gray); }
+  .submit-btn {
+    padding: 15px 40px;
+    background: var(--gold); color: var(--black);
+    border: none; font-family: 'Space Mono', monospace;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; cursor: none;
+    align-self: flex-start;
+    transition: background 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .submit-btn:hover { background: var(--gold-light); }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 32px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--dark);
+    border: 1px solid var(--gold);
+    color: var(--cream);
+    padding: 14px 28px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px; letter-spacing: 0.12em;
+    z-index: 9000;
+    transition: transform 0.4s;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* FOOTER */
+  footer {
+    background: var(--off-black);
+    border-top: 1px solid var(--border);
+    padding: 60px 48px 32px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+  .footer-brand {}
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 900;
+    color: var(--gold); margin-bottom: 12px;
+    display: block;
+  }
+  .footer-tagline { font-size: 13px; color: var(--gray); line-height: 1.7; max-width: 280px; }
+  .footer-heading { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 20px; }
+  .footer-links { display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a { color: var(--gray); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-copy { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--gray); letter-spacing: 0.15em; }
+  .social-links { display: flex; gap: 12px; }
+  .social-link {
+    width: 36px; height: 36px;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gray); font-size: 14px;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    cursor: none;
+  }
+  .social-link:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.05); }
+
+  /* SUCCESS STATE */
+  .order-success {
+    text-align: center; padding: 80px 48px;
+    display: none;
+  }
+  .order-success.active { display: block; }
+  .success-icon { font-size: 64px; margin-bottom: 24px; }
+  .success-title { font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: var(--gold); margin-bottom: 16px; }
+  .success-msg { font-size: 16px; color: var(--gray); line-height: 1.7; max-width: 500px; margin: 0 auto 32px; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .hero-content > * { animation: fadeUp 0.8s both; }
+  .hero-eyebrow { animation-delay: 0.1s; }
+  .hero-title { animation-delay: 0.2s; }
+  .hero-desc { animation-delay: 0.35s; }
+  .hero-ctas { animation-delay: 0.5s; }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    section { padding: 60px 24px; }
+    .hero { padding: 100px 24px 80px; }
+    .hero-stats { display: none; }
+    .product-card.featured { grid-column: span 1; }
+    .features-strip { grid-template-columns: 1fr 1fr; }
+    .categories-grid { grid-template-columns: 1fr; }
+    .cat-card:first-child { min-height: 280px; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .checkout-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .modal { grid-template-columns: 1fr; }
+    .modal-img { min-height: 200px; font-size: 60px; }
+    .form-row { grid-template-columns: 1fr; }
+    footer { padding: 48px 24px 24px; }
+  }
+  @media (max-width: 540px) {
+    .features-strip { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; gap: 16px; }
+  }
+
+  /* MOBILE NAV */
+  .mobile-menu {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(10,10,10,0.98);
+    z-index: 2000;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px; font-weight: 900;
+    color: var(--cream); text-decoration: none;
+    transition: color 0.2s;
+    cursor: none;
+  }
+  .mobile-menu a:hover { color: var(--gold); }
+  .mobile-close { position: absolute; top: 24px; right: 24px; background: none; border: none; color: var(--gray); font-size: 28px; cursor: none; }
+
+  /* SEARCH BAR */
+  .search-bar-wrap {
+    padding: 0 48px 48px;
+    background: var(--black);
+    display: flex; gap: 0;
+  }
+  .search-bar-wrap input {
+    flex: 1;
+    padding: 14px 20px;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-right: none;
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    cursor: none;
+  }
+  .search-bar-wrap input::placeholder { color: var(--gray); }
+  .search-bar-wrap input:focus { border-color: var(--gold); }
+  .search-bar-btn {
+    padding: 14px 28px;
+    background: var(--gold); color: var(--black);
+    border: none;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: none;
+  }
+  @media (max-width: 900px) { .search-bar-wrap { padding: 0 24px 32px; } }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="closeMobileMenu()">✕</button>
+  <a href="#shop" onclick="closeMobileMenu()">Shop</a>
+  <a href="#categories" onclick="closeMobileMenu()">Categories</a>
+  <a href="#about" onclick="closeMobileMenu()">About</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">RELICS<span>Action Figures & Antiques</span></a>
+  <div class="nav-links">
+    <a href="#shop">Shop</a>
+    <a href="#categories">Categories</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="toggleCart()">
+      <span>Cart <span class="cart-count" id="cartCount">0</span></span>
+    </button>
+    <button class="hamburger" onclick="openMobileMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Est. 2024 — Pakistan's Finest</div>
+    <h1 class="hero-title">
+      Where Legends<br>
+      <em>Never Fade.</em>
+    </h1>
+    <p class="hero-desc">Rare action figures, vintage collectibles, and priceless antiques — curated for those who know the difference between a toy and a treasure.</p>
+    <div class="hero-ctas">
+      <a href="#shop" class="btn-primary"><span>Browse Collection</span></a>
+      <a href="#contact" class="btn-outline">High-Value Inquiry</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div>
+      <div class="hero-stat-num">500+</div>
+      <div class="hero-stat-label">Rare Items</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">12+</div>
+      <div class="hero-stat-label">Years Sourcing</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">100%</div>
+      <div class="hero-stat-label">Authenticated</div>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-bar">
+  <div class="marquee-track" id="marqueeTrack">
+    <span>Action Figures</span><span class="marquee-dot">◆</span>
+    <span>Vintage Antiques</span><span class="marquee-dot">◆</span>
+    <span>Rare Collectibles</span><span class="marquee-dot">◆</span>
+    <span>Authenticated Pieces</span><span class="marquee-dot">◆</span>
+    <span>Free Delivery Karachi</span><span class="marquee-dot">◆</span>
+    <span>Worldwide Shipping</span><span class="marquee-dot">◆</span>
+    <span>Action Figures</span><span class="marquee-dot">◆</span>
+    <span>Vintage Antiques</span><span class="marquee-dot">◆</span>
+    <span>Rare Collectibles</span><span class="marquee-dot">◆</span>
+    <span>Authenticated Pieces</span><span class="marquee-dot">◆</span>
+    <span>Free Delivery Karachi</span><span class="marquee-dot">◆</span>
+    <span>Worldwide Shipping</span><span class="marquee-dot">◆</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="features-strip" id="about">
+  <div class="feature-item">
+    <div class="feature-icon">🔐</div>
+    <div class="feature-title">100% Authenticated</div>
+    <div class="feature-desc">Every item verified for authenticity. Certificates of provenance available on request for high-value pieces.</div>
+  </div>
+  <div class="feature-item">
+    <div class="feature-icon">📦</div>
+    <div class="feature-title">Secure Packaging</div>
+    <div class="feature-desc">Museum-grade packing for all fragile antiques and collectibles. Fully insured domestic and international shipping.</div>
+  </div>
+  <div class="feature-item">
+    <div class="feature-icon">↩️</div>
+    <div class="feature-title">7-Day Returns</div>
+    <div class="feature-desc">Not satisfied? Return within 7 days. We stand behind every piece we sell — no questions asked.</div>
+  </div>
+  <div class="feature-item">
+    <div class="feature-icon">💬</div>
+    <div class="feature-title">Expert Consultation</div>
+    <div class="feature-desc">Speak directly with our specialists for high-value acquisitions, appraisals, and curated collection building.</div>
+  </div>
+</div>
+
+<!-- SHOP SECTION -->
+<section id="shop">
+  <div class="section-header">
+    <div class="section-label">The Collection</div>
+    <h2 class="section-title">Featured <em>Pieces</em></h2>
+  </div>
+
+  <div class="search-bar-wrap" style="padding-left:0;padding-right:0;">
+    <input type="text" id="searchInput" placeholder="Search by name, era, character..." oninput="filterProducts()">
+    <button class="search-bar-btn" onclick="filterProducts()">Search</button>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="setFilter('all', this)">All Items</button>
+    <button class="filter-btn" onclick="setFilter('action-figure', this)">Action Figures</button>
+    <button class="filter-btn" onclick="setFilter('antique', this)">Antiques</button>
+    <button class="filter-btn" onclick="setFilter('vintage', this)">Vintage</button>
+    <button class="filter-btn" onclick="setFilter('rare', this)">Rare Finds</button>
+    <button class="filter-btn" onclick="setFilter('available', this)">In Stock</button>
+  </div>
+
+  <div class="product-grid" id="productGrid"></div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories-section" id="categories">
+  <div class="section-header">
+    <div class="section-label">Browse By</div>
+    <h2 class="section-title">Shop by <em>Category</em></h2>
+  </div>
+  <div class="categories-grid">
+    <div class="cat-card" style="cursor:none;" onclick="setFilter('action-figure', document.querySelector('.filter-btn:nth-child(2)')); document.getElementById('shop').scrollIntoView({behavior:'smooth'});">
+      <div class="cat-bg">🦸</div>
+      <div class="cat-overlay"></div>
+      <div class="cat-arrow">→</div>
+      <div class="cat-content">
+        <div class="cat-title">Action Figures</div>
+        <div class="cat-count">Marvel · DC · Anime · Custom</div>
+      </div>
+    </div>
+    <div class="cat-card" style="cursor:none;" onclick="setFilter('antique', document.querySelector('.filter-btn:nth-child(3)')); document.getElementById('shop').scrollIntoView({behavior:'smooth'});">
+      <div class="cat-bg">🏺</div>
+      <div class="cat-overlay"></div>
+      <div class="cat-arrow">→</div>
+      <div class="cat-content">
+        <div class="cat-title">Antiques</div>
+        <div class="cat-count">Mughal · Colonial · Art Deco</div>
+      </div>
+    </div>
+    <div class="cat-card" style="cursor:none;" onclick="setFilter('vintage', document.querySelector('.filter-btn:nth-child(4)')); document.getElementById('shop').scrollIntoView({behavior:'smooth'});">
+      <div class="cat-bg">⌚</div>
+      <div class="cat-overlay"></div>
+      <div class="cat-arrow">→</div>
+      <div class="cat-content">
+        <div class="cat-title">Vintage Collectibles</div>
+        <div class="cat-count">1950s–1990s · Retro · OG</div>
+      </div>
+    </div>
+    <div class="cat-card" style="cursor:none;" onclick="setFilter('rare', document.querySelector('.filter-btn:nth-child(5)')); document.getElementById('shop').scrollIntoView({behavior:'smooth'});">
+      <div class="cat-bg">💎</div>
+      <div class="cat-overlay"></div>
+      <div class="cat-arrow">→</div>
+      <div class="cat-content">
+        <div class="cat-title">Rare Finds</div>
+        <div class="cat-count">1-of-a-kind · Prototype · HTF</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+  <div class="section-header">
+    <div class="section-label">Collectors Say</div>
+    <h2 class="section-title">Trusted by <em>Enthusiasts</em></h2>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <div class="testimonial-text">Found a mint-condition 1984 Optimus Prime I'd been searching for over a decade. Condition was exactly as described — pristine. Packaging was immaculate. Will be a loyal customer forever.</div>
+      <div class="testimonial-author">— Ahmed K., Lahore</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <div class="testimonial-text">The Mughal-era dagger I purchased came with a detailed provenance certificate. The communication was professional, shipping was fast, and the piece exceeded my expectations entirely.</div>
+      <div class="testimonial-author">— Zara M., Karachi</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <div class="testimonial-text">I've bought from collectors around the world. RELICS stands out for their honesty about item conditions and their genuine passion for the hobby. Highly recommended.</div>
+      <div class="testimonial-author">— Faisal R., Dubai</div>
+    </div>
+  </div>
+</section>
+
+<!-- CHECKOUT SECTION (hidden until checkout clicked) -->
+<section class="checkout-section" id="checkoutSection">
+  <div class="section-header">
+    <div class="section-label">Final Step</div>
+    <h2 class="section-title">Checkout</h2>
+  </div>
+  <div class="checkout-grid">
+    <div class="checkout-form">
+      <div>
+        <div class="form-section-title">Personal Details</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-input" placeholder="Ali" id="firstName">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-input" placeholder="Khan" id="lastName">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" placeholder="you@email.com" id="checkoutEmail">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone (WhatsApp preferred)</label>
+        <input type="tel" class="form-input" placeholder="+92 300 0000000" id="checkoutPhone">
+      </div>
+      <div>
+        <div class="form-section-title" style="margin-top:8px;">Shipping Address</div>
+        <div class="form-group">
+          <label class="form-label">Street Address</label>
+          <input type="text" class="form-input" placeholder="House #, Street, Area" id="address">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">City</label>
+          <input type="text" class="form-input" placeholder="Karachi" id="city">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Province</label>
+          <select class="form-input" id="province">
+            <option value="">Select...</option>
+            <option>Sindh</option>
+            <option>Punjab</option>
+            <option>KPK</option>
+            <option>Balochistan</option>
+            <option>Other / International</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <div class="form-section-title" style="margin-top:8px;">Payment Method</div>
+        <div class="form-group">
+          <label class="form-label">Select Payment</label>
+          <select class="form-input" id="paymentMethod">
+            <option value="">Choose...</option>
+            <option>EasyPaisa</option>
+            <option>JazzCash</option>
+            <option>Bank Transfer (IBT)</option>
+            <option>Cash on Delivery (COD)</option>
+            <option>PayPal (International)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Order Notes (optional)</label>
+        <textarea class="form-textarea" placeholder="Any special instructions or questions about your order..." id="orderNotes" style="min-height:90px;"></textarea>
+      </div>
+    </div>
+
+    <div class="order-summary">
+      <div class="order-summary-title">Your Order</div>
+      <div id="orderItems"></div>
+      <div class="order-total">
+        <div class="order-total-label">Total</div>
+        <div class="order-total-amount" id="orderTotal">Rs. 0</div>
+      </div>
+      <button class="place-order-btn" onclick="placeOrder()">Place Order →</button>
+      <p style="font-size:11px;color:var(--gray);margin-top:12px;line-height:1.6;">By placing your order you agree to our terms. We'll contact you on WhatsApp to confirm and arrange payment.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ORDER SUCCESS -->
+<div class="order-success" id="orderSuccess" style="padding:100px 48px;">
+  <div class="success-icon">🎉</div>
+  <div class="success-title">Order Received!</div>
+  <div class="success-msg">Thank you for your order. We'll WhatsApp you within 24 hours to confirm your items and arrange payment. You're getting something special.</div>
+  <a href="#shop" class="btn-primary" onclick="resetOrder()"><span>Continue Shopping</span></a>
+</div>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="section-header">
+    <div class="section-label">Get In Touch</div>
+    <h2 class="section-title">High-Value <em>Inquiries</em></h2>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <p style="font-size:16px;color:var(--gray);line-height:1.8;margin-bottom:16px;">For rare, one-of-a-kind, or high-value antiques, reach out directly. We handle private sales, appraisals, and custom sourcing with full discretion.</p>
+      <div class="contact-item">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div class="contact-label">Phone / WhatsApp</div>
+          <div class="contact-value"><a href="tel:+923230927027">+92 323-0927027</a></div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">✉️</div>
+        <div>
+          <div class="contact-label">Email</div>
+          <div class="contact-value"><a href="mailto:noobk405@gmail.com">noobk405@gmail.com</a></div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">🕐</div>
+        <div>
+          <div class="contact-label">Response Time</div>
+          <div class="contact-value">Within 24 hours on business days</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">🌍</div>
+        <div>
+          <div class="contact-label">We Ship</div>
+          <div class="contact-value">Across Pakistan & Worldwide</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="form-section-title" style="margin-bottom:20px;">Send an Inquiry</div>
+      <div class="contact-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Your Name</label>
+            <input type="text" class="form-input" placeholder="Full name" id="contactName">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" placeholder="your@email.com" id="contactEmail">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone / WhatsApp</label>
+          <input type="tel" class="form-input" placeholder="+92 300 0000000" id="contactPhone">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Item of Interest</label>
+          <input type="text" class="form-input" placeholder="What are you looking for?" id="contactItem">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="form-textarea" placeholder="Tell us about the item, your budget, or any other details..." id="contactMsg"></textarea>
+        </div>
+        <button class="submit-btn" onclick="submitInquiry()">Send Inquiry →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="footer-logo">RELICS</span>
+      <p class="footer-tagline">Pakistan's premier destination for authenticated action figures, vintage collectibles, and rare antiques. Every piece tells a story.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Shop</div>
+      <div class="footer-links">
+        <a href="#shop" onclick="setFilter('action-figure', null)">Action Figures</a>
+        <a href="#shop" onclick="setFilter('antique', null)">Antiques</a>
+        <a href="#shop" onclick="setFilter('vintage', null)">Vintage</a>
+        <a href="#shop" onclick="setFilter('rare', null)">Rare Finds</a>
+        <a href="#shop" onclick="setFilter('all', null)">All Items</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-heading">Info</div>
+      <div class="footer-links">
+        <a href="#about">About Us</a>
+        <a href="#contact">Contact</a>
+        <a href="#" onclick="showToast('Shipping policy: Free in Karachi, nationwide via TCS/Leopard. International via DHL.')">Shipping Policy</a>
+        <a href="#" onclick="showToast('Returns accepted within 7 days. Item must be in original condition.')">Returns</a>
+        <a href="#" onclick="showToast('Authentication: We verify all items. Certificates available for high-value pieces.')">Authentication</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-heading">Contact</div>
+      <div class="footer-links">
+        <a href="tel:+923230927027">+92 323-0927027</a>
+        <a href="mailto:noobk405@gmail.com">noobk405@gmail.com</a>
+        <a href="#" onclick="showToast('WhatsApp us at +92 323-0927027 for quick responses!')">WhatsApp Us</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2024 RELICS. All rights reserved. Pakistan.</div>
+    <div class="social-links">
+      <a class="social-link" href="#" title="Instagram" onclick="showToast('Follow us on Instagram for new arrivals!')">📸</a>
+      <a class="social-link" href="#" title="Facebook" onclick="showToast('Like our Facebook page for updates!')">📘</a>
+      <a class="social-link" href="https://wa.me/923230927027" title="WhatsApp" target="_blank">💬</a>
+    </div>
+  </div>
+</footer>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
+  <div class="modal" id="modal">
+    <div class="modal-img" id="modalImg">🎭</div>
+    <div class="modal-body" style="position:relative;">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-category" id="modalCat"></div>
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-price" id="modalPrice"></div>
+      <div class="condition-badge" id="modalCondition"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="qty-row">
+        <div class="qty-label">Qty</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty(-1)">−</button>
+          <div class="qty-num" id="qtyNum">1</div>
+          <button class="qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-add-btn" onclick="addToCartFromModal()">Add to Cart</button>
+        <button class="modal-inquire-btn" onclick="inquireFromModal()">Request Private Inquiry</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CART PANEL -->
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-header">
+    <div class="cart-title">Your Cart</div>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer">
+    <div class="cart-subtotal">
+      <div class="cart-subtotal-label">Subtotal</div>
+      <div class="cart-subtotal-amount" id="cartTotal">Rs. 0</div>
+    </div>
+    <button class="checkout-btn" onclick="goToCheckout()">Proceed to Checkout →</button>
+    <p style="font-size:11px;color:var(--gray);text-align:center;">Free delivery within Karachi. Nationwide via courier.</p>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== DATA ====================
+const products = [
+  {
+    id: 1, name: "Iron Man Mark III", category: "action-figure",
+    price: 8500, oldPrice: 11000, badge: "new",
+    condition: "Mint in Box (MIB)", era: "2008",
+    desc: "Original 2008 Hot Toys 1/6 scale Iron Man Mark III. Never removed from box. Box has minor shelf wear on corners. All accessories intact. One of the finest pieces in modern action figure collecting.",
+    icon: "🤖", tags: ["action-figure", "rare"]
+  },
+  {
+    id: 2, name: "Mughal Silver Coin", category: "antique",
+    price: 45000, badge: "rare",
+    condition: "Very Good — Authenticated", era: "c. 1658",
+    desc: "Silver rupiya from the reign of Aurangzeb Alamgir. Minted in Lahore. Clear calligraphy on both faces. Certificate of provenance included. Ideal for serious Mughal-era collectors.",
+    icon: "🪙", tags: ["antique", "rare"]
+  },
+  {
+    id: 3, name: "G.I. Joe Cobra Commander", category: "action-figure",
+    price: 6200, badge: null,
+    condition: "Complete, C-8 (Near Mint)", era: "1982",
+    desc: "Original 1982 Hasbro G.I. Joe Cobra Commander with filecard. Straight-arm variant. All original accessories. Flag back, no play wear. A grail piece for any Joe collector.",
+    icon: "🎖️", tags: ["action-figure", "vintage"]
+  },
+  {
+    id: 4, name: "Art Deco Brass Compass", category: "antique",
+    price: 18500, badge: null,
+    condition: "Good — Working Condition", era: "c. 1920s",
+    desc: "Stunning Art Deco officer's compass, possibly British colonial issue. Original leather case with embossed monogram. Compass needle functions perfectly. A conversation-starting centrepiece.",
+    icon: "🧭", tags: ["antique", "vintage"]
+  },
+  {
+    id: 5, name: "Dragon Ball Z — SS Goku (1998)", category: "action-figure",
+    price: 3800, badge: "new",
+    condition: "Loose, Complete — C-9", era: "1998",
+    desc: "Irwin Toys 1998 Super Saiyan Goku 5\" figure. Extremely clean with vivid paint. All accessories present (power ball, base). A true relic from the golden age of anime toys in Pakistan.",
+    icon: "⚡", tags: ["action-figure", "vintage"]
+  },
+  {
+    id: 6, name: "Colonial-Era Oil Lamp", category: "antique",
+    price: 12000, badge: null,
+    condition: "Good — Minor Patina", era: "c. 1890",
+    desc: "Hand-hammered brass oil lamp, British colonial period. Intricate floral etching on reservoir and base. Original wick holder intact. A beautiful functional antique with remarkable detail.",
+    icon: "🪔", tags: ["antique"]
+  },
+  {
+    id: 7, name: "Marvel Legends — Black Panther", category: "action-figure",
+    price: 4500, badge: null,
+    condition: "Sealed — MISB", era: "2018",
+    desc: "Hasbro Marvel Legends 6\" Black Panther (Wakanda Forever Wave). Factory sealed, pristine box. BAF piece included. Investment grade — values have been climbing steadily.",
+    icon: "🐾", tags: ["action-figure", "available"]
+  },
+  {
+    id: 8, name: "Vintage Pashtun Dagger (Khyber)", category: "antique",
+    price: 55000, badge: "rare",
+    condition: "Excellent — Authenticated", era: "c. 1900",
+    desc: "Khyber knife with walrus ivory handle and wootz steel blade. Traditional tribal silver overlay on handle. Blade holds original temper. Provenance traced to a Peshawar estate. Museum quality.",
+    icon: "⚔️", tags: ["antique", "rare"]
+  },
+  {
+    id: 9, name: "TMNT Leonardo — 1988 Original", category: "action-figure",
+    price: 9200, badge: null,
+    condition: "Very Good — C-7.5", era: "1988",
+    desc: "Original 1988 Playmates TMNT Leonardo. Playwear consistent with the era. All weapons present. Iconic first year figure. The quintessential 80s action figure — this IS childhood.",
+    icon: "🐢", tags: ["action-figure", "vintage", "rare"]
+  },
+  {
+    id: 10, name: "19th Century Pocket Watch", category: "antique",
+    price: 32000, badge: "rare",
+    condition: "Runs — Display Grade", era: "c. 1880",
+    desc: "Swiss-made pocket watch, hunter case with engraved floral motif. 15-jewel movement, fully serviced. Keeps time well. Gold-filled case in remarkable condition for its age.",
+    icon: "⌚", tags: ["antique", "vintage", "rare"]
+  },
+  {
+    id: 11, name: "He-Man MOTU — Skeletor 1982", category: "action-figure",
+    price: 7800, badge: null,
+    condition: "Complete — C-8", era: "1982",
+    desc: "Original Mattel Masters of the Universe Skeletor. All accessories including Havoc Staff. Tight joints, vivid paint. One of the most recognizable villains in toy history — and one of the rarest to find complete.",
+    icon: "💀", tags: ["action-figure", "vintage"]
+  },
+  {
+    id: 12, name: "Mughal Miniature Painting", category: "antique",
+    price: 85000, badge: "rare",
+    condition: "Very Good — Expert Verified", era: "c. 1700",
+    desc: "Stunning Mughal-style miniature on vellum. Court hunting scene with fine gold detailing. Authenticated by independent expert. Framed in conservation glass. Inquiries only — contact us for full details and images.",
+    icon: "🖼️", tags: ["antique", "rare"]
+  }
+];
+
+let cart = [];
+let currentFilter = 'all';
+let currentProduct = null;
+let currentQty = 1;
+
+// ==================== CURSOR ====================
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+  setTimeout(() => {
+    ring.style.left = e.clientX + 'px';
+    ring.style.top = e.clientY + 'px';
+  }, 80);
+});
+
+// ==================== TOAST ====================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ==================== PRODUCTS ====================
+function renderProducts(list) {
+  const grid = document.getElementById('productGrid');
+  if (!list.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray);font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.2em;">NO ITEMS FOUND</div>`;
+    return;
+  }
+  grid.innerHTML = list.map((p, i) => `
+    <div class="product-card ${i === 0 && list.length >= 4 ? 'featured' : ''}" data-id="${p.id}">
+      ${p.badge ? `<div class="badge badge-${p.badge}">${p.badge.toUpperCase()}</div>` : ''}
+      <div class="product-img-wrap">
+        <div class="product-img-placeholder">
+          <div class="icon">${p.icon}</div>
+          <div class="img-label">${p.era}</div>
+        </div>
+        <div class="product-overlay">
+          <button class="overlay-btn primary" onclick="openModal(${p.id})">View Details</button>
+          <button class="overlay-btn secondary" onclick="addToCart(${p.id}); event.stopPropagation();">+ Quick Add</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-category">${p.category.replace('-', ' ')}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-condition">${p.condition}</div>
+        <div class="product-footer">
+          <div class="product-price">
+            Rs. ${p.price.toLocaleString()}
+            ${p.oldPrice ? `<span>Rs. ${p.oldPrice.toLocaleString()}</span>` : ''}
+          </div>
+          <button class="quick-add" onclick="addToCart(${p.id}); event.stopPropagation();" title="Add to cart">+</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterProducts() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  let list = products.filter(p => {
+    const matchCat = currentFilter === 'all' || p.tags.includes(currentFilter) || p.category === currentFilter;
+    const matchSearch = !q || p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.condition.toLowerCase().includes(q);
+    return matchCat && matchSearch;
+  });
+  renderProducts(list);
+}
+
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  filterProducts();
+}
+
+renderProducts(products);
+
+// ==================== MODAL ====================
+function openModal(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  currentProduct = p;
+  currentQty = 1;
+  document.getElementById('qtyNum').textContent = 1;
+  document.getElementById('modalImg').textContent = p.icon;
+  document.getElementById('modalCat').textContent = p.category.replace('-', ' ').toUpperCase() + ' · ' + p.era;
+  document.getElementById('modalTitle').textContent = p.name;
+  document.getElementById('modalPrice').textContent = 'Rs. ' + p.price.toLocaleString();
+  document.getElementById('modalCondition').textContent = '📋 ' + p.condition;
+  document.getElementById('modalDesc').textContent = p.desc;
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function closeModalOnBg(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function changeQty(d) {
+  currentQty = Math.max(1, currentQty + d);
+  document.getElementById('qtyNum').textContent = currentQty;
+}
+
+function addToCartFromModal() {
+  if (!currentProduct) return;
+  for (let i = 0; i < currentQty; i++) addToCart(currentProduct.id, true);
+  showToast(`✓ ${currentProduct.name} added to cart`);
+  closeModal();
+}
+
+function inquireFromModal() {
+  closeModal();
+  document.getElementById('contactItem').value = currentProduct.name;
+  document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+  showToast('Fill in your details below to inquire about this piece.');
+}
+
+// ==================== CART ====================
+function addToCart(id, silent = false) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  const existing = cart.find(c => c.id === id);
+  if (existing) existing.qty++;
+  else cart.push({ ...p, qty: 1 });
+  updateCartUI();
+  if (!silent) showToast(`✓ ${p.name} added to cart`);
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const count = cart.reduce((s, c) => s + c.qty, 0);
+  document.getElementById('cartCount').textContent = count;
+
+  const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  document.getElementById('cartTotal').textContent = 'Rs. ' + total.toLocaleString();
+
+  const itemsEl = document.getElementById('cartItems');
+  if (!cart.length) {
+    itemsEl.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">🛍️</div><div>Your cart is empty</div></div>`;
+    return;
+  }
+  itemsEl.innerHTML = cart.map(c => `
+    <div class="cart-item">
+      <div class="cart-item-img">${c.icon}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${c.name}</div>
+        <div class="cart-item-price">Rs. ${(c.price * c.qty).toLocaleString()} × ${c.qty}</div>
+      </div>
+      <button class="cart-item-remove" onclick="removeFromCart(${c.id})">✕</button>
+    </div>
+  `).join('');
+}
+
+function toggleCart() {
+  document.getElementById('cartPanel').classList.toggle('open');
+}
+
+// ==================== CHECKOUT ====================
+function goToCheckout() {
+  if (!cart.length) { showToast('Your cart is empty!'); return; }
+  toggleCart();
+  const checkoutSection = document.getElementById('checkoutSection');
+  checkoutSection.classList.add('active');
+  checkoutSection.scrollIntoView({ behavior: 'smooth' });
+
+  const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  document.getElementById('orderItems').innerHTML = cart.map(c => `
+    <div class="order-item">
+      <div class="order-item-name">${c.icon} ${c.name} ×${c.qty}</div>
+      <div class="order-item-price">Rs. ${(c.price * c.qty).toLocaleString()}</div>
+    </div>
+  `).join('');
+  document.getElementById('orderTotal').textContent = 'Rs. ' + total.toLocaleString();
+}
+
+function placeOrder() {
+  const first = document.getElementById('firstName').value.trim();
+  const last = document.getElementById('lastName').value.trim();
+  const email = document.getElementById('checkoutEmail').value.trim();
+  const phone = document.getElementById('checkoutPhone').value.trim();
+  const address = document.getElementById('address').value.trim();
+  const city = document.getElementById('city').value.trim();
+  const payment = document.getElementById('paymentMethod').value;
+
+  if (!first || !last || !email || !phone || !address || !city || !payment) {
+    showToast('⚠️ Please fill in all required fields');
+    return;
+  }
+
+  document.getElementById('checkoutSection').classList.remove('active');
+  document.getElementById('orderSuccess').classList.add('active');
+  document.getElementById('orderSuccess').scrollIntoView({ behavior: 'smooth' });
+  cart = [];
+  updateCartUI();
+}
+
+function resetOrder() {
+  document.getElementById('orderSuccess').classList.remove('active');
+  // clear form
+  ['firstName','lastName','checkoutEmail','checkoutPhone','address','city','orderNotes'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
+// ==================== CONTACT ====================
+function submitInquiry() {
+  const name = document.getElementById('contactName').value.trim();
+  const email = document.getElementById('contactEmail').value.trim();
+  const msg = document.getElementById('contactMsg').value.trim();
+  if (!name || !email || !msg) {
+    showToast('⚠️ Please fill in your name, email, and message');
+    return;
+  }
+  showToast('✓ Inquiry sent! We\'ll respond within 24 hours.');
+  ['contactName','contactEmail','contactPhone','contactItem','contactMsg'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
+// ==================== MOBILE MENU ====================
+function openMobileMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+function closeMobileMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+
+// ==================== SCROLL EFFECTS ====================
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('nav');
+  nav.style.padding = window.scrollY > 60 ? '14px 48px' : '20px 48px';
+});
+
+// ==================== KEYBOARD ====================
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); document.getElementById('cartPanel').classList.remove('open'); }
+});
+</script>
+</body>
+</html>
